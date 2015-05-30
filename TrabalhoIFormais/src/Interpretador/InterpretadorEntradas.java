@@ -1,3 +1,5 @@
+package Interpretador;
+
 public class InterpretadorEntradas {
     
     /**
