@@ -6,7 +6,7 @@ public class Gramatica {
     
     public ArrayList<Simbolo> naoTerminais;
     public ArrayList<Simbolo> terminais;
-    public ArrayList<Producoes> producoes;
+    public ArrayList<Producao> producoes;
     public Simbolo simboloInicial;
     
     private static Gramatica instancia;
@@ -21,9 +21,10 @@ public class Gramatica {
         naoTerminais = new ArrayList<>();
         terminais = new ArrayList<>();
         producoes = new ArrayList<>();
+    }
+    
+    public void definirNovaGramatica(){
         
-        simboloInicial = new Simbolo("S", 0);
-        naoTerminais.add(simboloInicial);
     }
 }
 

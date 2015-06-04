@@ -1,15 +1,17 @@
 package visao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.table.DefaultTableModel;
-import modelo.Linha;
+import modelo.Gramatica;
+import modelo.Producao;
 import modelo.Simbolo;
-import modelo.TipoSimbolo;
 
 public class TelaPrincipal extends javax.swing.JFrame {
 
       DefaultTableModel modeloGramatica;
-      ArrayList<Linha> linhasDaTabela;
+      ArrayList<Producao> producoesDaGramatica;
+      Gramatica gramatica = Gramatica.retornaSingleton();
     public TelaPrincipal() {
         initComponents();
         inicializarComponentes();
@@ -17,7 +19,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     
     public void inicializarComponentes(){
         modeloGramatica = (DefaultTableModel) tabelaGramatica.getModel();
-        linhasDaTabela = new ArrayList<>();
+        producoesDaGramatica = new ArrayList<>();
     }
    
     /**
@@ -173,12 +175,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_adicionarLinhaActionPerformed
 
     private void salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarActionPerformed
-      linhasDaTabela.clear();
+      producoesDaGramatica.clear();
+      Simbolo origem = null;
+      for(int i = 0; i < tabelaGramatica.getRowCount(); i++){ 
+          if(i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
+          origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), null, 0);
+          else //se nao ele eh um simbolo nao terminal
+          origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), null, 1);
+          
+         Producao conjuntoProducoes = new Producao(origem);
+         conjuntoProducoes.producao.addAll(Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|")));
+         producoesDaGramatica.add(conjuntoProducoes);   
+        }
       
-      String ladoDireito = (String) tabelaGramatica.getValueAt(1, 2);
-      String[] producoes = ladoDireito.split("\\|"); 
       
-      System.out.println(producoes[0]);
     }//GEN-LAST:event_salvarActionPerformed
 
     /**
