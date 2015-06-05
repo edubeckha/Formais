@@ -1,14 +1,11 @@
-package modelo;
-
-import java.util.ArrayList;
+package gramatica.modelo;
 
 public class Producao {
     public Simbolo origem;
-    public ArrayList<String> producao;
+    public String terminal, naoTerminal;
     
     public Producao(Simbolo o){
         origem = o;
-        producao = new ArrayList<>();
     }
         
 }

@@ -1,4 +1,4 @@
-package modelo;
+package gramatica.modelo;
 
 public enum TipoSimbolo {
     INICIAL(),
