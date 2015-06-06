@@ -459,12 +459,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
       columnNames = null;
       data = new Object[0][0];
       columnNames = new String[automato.alfabeto.size()+1];
-      
-      int i = 1;
+
       columnNames[0] = "δ";
-      for(Iterator<SimboloAlfabeto> it = automato.alfabeto.iterator(); it.hasNext();){
-          columnNames[i] = it.next().nome;
-          i++;
+      for(int i = 0; i < automato.alfabeto.size(); i++){
+          columnNames[i] = automato.alfabeto.get(i).nome;
       }
       
       modeloAutomato = new DefaultTableModel(data, columnNames);

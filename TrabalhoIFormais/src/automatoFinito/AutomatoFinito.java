@@ -1,14 +1,13 @@
 package automatoFinito;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public class AutomatoFinito {
     
-    public Set<Estado> estados;
-    public Set<SimboloAlfabeto> alfabeto;
-    public Set<Mapeamento> mapeamentos;
+    public ArrayList<Estado> estados;
+    public ArrayList<SimboloAlfabeto> alfabeto;
+    public ArrayList<Mapeamento> mapeamentos;
     public Estado inicial;
-    public Set<Estado> estadosFinais;
+    public ArrayList<Estado> estadosFinais;
     private static AutomatoFinito _instancia;
     
     public static AutomatoFinito retornaInstancia(){
@@ -17,10 +16,10 @@ public class AutomatoFinito {
         return _instancia;
     }
     public AutomatoFinito(){
-        estados = new HashSet<>();
-        alfabeto = new HashSet<>();
-        mapeamentos = new HashSet<>();
-        estadosFinais = new HashSet<>();
+        estados = new ArrayList<>();
+        alfabeto = new ArrayList<>();
+        mapeamentos = new ArrayList<>();
+        estadosFinais = new ArrayList<>();
     }
     
     /**
@@ -63,6 +62,11 @@ public class AutomatoFinito {
     }
     
     public void criaFuncoesMapeamento(Object[][] dados, int numLinhas, int numColunas){
+        for(int i = 0; i < numLinhas; i++){
+            for(int j = 0; j < numColunas ; j++){
+                //Mapeamento mapea = new Mapeamento(inicial, null, inicial)
+            }
+        }
     }
     
     /**
@@ -90,5 +94,14 @@ public class AutomatoFinito {
             temp = new Estado(string.substring(string.length()-1, string.length()), 1);
        }
        estados.add(temp);
+    }
+    
+    public Estado retornaEstadoAPartirDeLabel(String label){
+        Estado estado = null;
+        for(Estado est : estados){
+            if(est.label.equals(label))
+                estado = est;
+      }
+        return estado;
     }
 }
