@@ -415,7 +415,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                data[i][j] = tabelaAutomato.getValueAt(i, j);
            }  
        }
-       automato.tratarDadosEntrada(data, numLinhas, numColunas);
+       automato.tratarDadosEntrada(data, numLinhas,  numColunas);
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
     

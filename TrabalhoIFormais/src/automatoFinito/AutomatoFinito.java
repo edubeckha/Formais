@@ -53,21 +53,24 @@ public class AutomatoFinito {
      * Função que trata os dados de entrada de um usuario quando o mesmo cria ou recria um automato a 
      * partir da tabela
      * @param dados Dados do automato
+     * @param numColunas numero de colunas da minha tabela do automato
      */
-    public void tratarDadosEntrada(Object[][] dados, int numLinhas, int numColunas){
-        for(int i = 0; i < numLinhas; i++){
+    public void tratarDadosEntrada(Object[][] dados, int numLinhas,  int numColunas){
             for(int j = 0; j < numColunas; j++){
-                processadorStrings(String.valueOf(dados[i][j]));
+                processadorEstados(String.valueOf(dados[0][j]));
             }
-        }
+          criaFuncoesMapeamento(dados, numLinhas, numColunas);
+    }
+    
+    public void criaFuncoesMapeamento(Object[][] dados, int numLinhas, int numColunas){
     }
     
     /**
      * Processa as strings que sao enviadas para essa funcao. Nesse processamento verificamos o tipo de estado do automato
      * e populamos as devidas estruturas da classe
-     * @param string 
+     * @param string String a ser computada
      */
-    public void processadorStrings(String string){
+    public void processadorEstados(String string){
         Estado temp;
         //vendo se o estado eh final e inicial
        if(string.substring(0, 1).equals("*")){
