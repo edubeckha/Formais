@@ -9,10 +9,15 @@ import javax.swing.table.DefaultTableModel;
 import gramatica.modelo.Gramatica;
 import gramatica.modelo.Producao;
 import gramatica.modelo.Simbolo;
+import static java.lang.reflect.Array.set;
+import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 public class TelaPrincipal extends javax.swing.JFrame {
 
+    
+      Object[][] data = null;
+      String[] columnNames = new String[1];
       DefaultTableModel modeloGramatica, modeloAutomato;
       ArrayList<Producao> producoesDaGramatica;
  
@@ -20,12 +25,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
       AutomatoFinito automato = AutomatoFinito.retornaInstancia();
     public TelaPrincipal() {
         initComponents();
+        columnNames[0] = "δ";
+        data = new Object[0][0];
         inicializarComponentes();
     }
     
     public void inicializarComponentes(){
         modeloGramatica = (DefaultTableModel) tabelaGramatica.getModel();
-        modeloAutomato = (DefaultTableModel) tabelaAutomato.getModel();
+        modeloAutomato = new DefaultTableModel(data, columnNames);
+        tabelaAutomato.setModel(modeloAutomato);
         producoesDaGramatica = new ArrayList<>();
     }
    
@@ -210,24 +218,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "δ"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         tabelaAutomato.setToolTipText("");
         tabelaAutomato.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tabelaAutomato.setFocusable(false);
@@ -236,10 +229,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         tabelaAutomato.getTableHeader().setReorderingAllowed(false);
         tabelaAutomato.setUpdateSelectionOnSort(false);
         jScrollPane2.setViewportView(tabelaAutomato);
-        if (tabelaAutomato.getColumnModel().getColumnCount() > 0) {
-            tabelaAutomato.getColumnModel().getColumn(0).setResizable(false);
-            tabelaAutomato.getColumnModel().getColumn(0).setPreferredWidth(3);
-        }
 
         adicionarLinhaAutomato.setText("Adicionar Nova Linha");
         adicionarLinhaAutomato.setEnabled(false);
@@ -418,7 +407,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_resetaAutomatoActionPerformed
 
     private void salvarAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarAutomatoActionPerformed
-        // TODO add your handling code here:
+       data = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
+       for(int i = 0; i < tabelaAutomato.getRowCount(); i++){
+           for(int j = 0; j < tabelaAutomato.getColumnCount(); i++){
+               data[i][j] = tabelaAutomato.getValueAt(i, j);
+           }  
+       }
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
     
@@ -441,6 +435,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     
     
     //AUTOMATO
+    /**
+     * Função que recebe um novo alfabeto quando ao automato é ressetado.
+     * @return Um novo alfabeto
+     */
     public String retornaAlfabeto(){
         String alfabeto;
         try{
@@ -451,9 +449,24 @@ public class TelaPrincipal extends javax.swing.JFrame {
         return alfabeto;      
     }
     
-    public void criarColunasAPartirDoAlfabeto(){
-        for(SimboloAlfabeto simbolo : automato.alfabeto)
-            modeloAutomato.addColumn(simbolo.nome + "");
+    /**
+     * Função que cria as colunas a partir do alfabeto inserido pelo usuario
+     */
+    public void criarColunasAPartirDoAlfabeto(){   
+      columnNames = null;
+      data = new Object[0][0];
+      columnNames = new String[automato.alfabeto.size()+1];
+      
+      int i = 1;
+      columnNames[0] = "δ";
+      for(Iterator<SimboloAlfabeto> it = automato.alfabeto.iterator(); it.hasNext();){
+          columnNames[i] = it.next().nome;
+          i++;
+      }
+      
+      modeloAutomato = new DefaultTableModel(data, columnNames);
+      tabelaAutomato.setModel(modeloAutomato);
+        
     }
     
     /**
