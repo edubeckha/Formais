@@ -344,8 +344,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void salvarGramaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarGramaticaActionPerformed
         producoesDaGramatica.clear();
-        Simbolo origem = null;
-        Producao conjuntoProducoes = null;
+        Simbolo origem;
+        Producao conjuntoProducoes;
         for(int i = 0; i < tabelaGramatica.getRowCount(); i++){
             if(i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
             origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)),0);
@@ -407,12 +407,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_resetaAutomatoActionPerformed
 
     private void salvarAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarAutomatoActionPerformed
+       int numLinhas = tabelaAutomato.getRowCount();
+       int numColunas = tabelaAutomato.getColumnCount();
        data = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
        for(int i = 0; i < tabelaAutomato.getRowCount(); i++){
-           for(int j = 0; j < tabelaAutomato.getColumnCount(); i++){
+           for(int j = 0; j < tabelaAutomato.getColumnCount(); j++){
                data[i][j] = tabelaAutomato.getValueAt(i, j);
            }  
        }
+       automato.tratarDadosEntrada(data, numLinhas, numColunas);
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
     
