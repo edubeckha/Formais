@@ -14,4 +14,11 @@ public class Estado {
         sucessores = new HashSet<>();
     }
     
+     public Estado(String l, TipoEstado t){
+        label = l;
+        tipo = t;
+        antecessores = new HashSet<>();
+        sucessores = new HashSet<>();
+    }
+    
 }

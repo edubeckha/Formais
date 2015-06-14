@@ -15,28 +15,28 @@ import javax.swing.JOptionPane;
 
 public class TelaPrincipal extends javax.swing.JFrame {
 
-    
-      Object[][] data = null;
-      String[] columnNames = new String[1];
-      DefaultTableModel modeloGramatica, modeloAutomato;
-      ArrayList<Producao> producoesDaGramatica;
- 
-      Gramatica gramatica = Gramatica.retornaSingleton();
-      AutomatoFinito automato = AutomatoFinito.retornaInstancia();
+    Object[][] data = null;
+    String[] columnNames = new String[1];
+    DefaultTableModel modeloGramatica, modeloAutomato;
+    ArrayList<Producao> producoesDaGramatica;
+
+    Gramatica gramatica = Gramatica.retornaSingleton();
+    AutomatoFinito automato = new AutomatoFinito();
+
     public TelaPrincipal() {
         initComponents();
         columnNames[0] = "δ";
         data = new Object[0][0];
         inicializarComponentes();
     }
-    
-    public void inicializarComponentes(){
+
+    public void inicializarComponentes() {
         modeloGramatica = (DefaultTableModel) tabelaGramatica.getModel();
         modeloAutomato = new DefaultTableModel(data, columnNames);
         tabelaAutomato.setModel(modeloAutomato);
         producoesDaGramatica = new ArrayList<>();
     }
-   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +65,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         adicionarLinhaAutomato = new javax.swing.JButton();
         resetaAutomato = new javax.swing.JButton();
         salvarAutomato = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        determinizar = new javax.swing.JButton();
+        minimizar = new javax.swing.JButton();
+        complementar = new javax.swing.JButton();
+        interseccao = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -252,15 +257,61 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        determinizar.setText("Determinizar");
+        determinizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                determinizarActionPerformed(evt);
+            }
+        });
+
+        minimizar.setText("Minimizar");
+
+        complementar.setText("Complementar");
+
+        interseccao.setText("Interseccao");
+        interseccao.setToolTipText("");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(complementar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(determinizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(minimizar, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(interseccao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(determinizar)
+                    .addComponent(minimizar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(complementar)
+                    .addComponent(interseccao))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -284,6 +335,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     .addComponent(adicionarLinhaAutomato)
                     .addComponent(resetaAutomato)
                     .addComponent(salvarAutomato))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -346,16 +399,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
         producoesDaGramatica.clear();
         Simbolo origem;
         Producao conjuntoProducoes;
-        for(int i = 0; i < tabelaGramatica.getRowCount(); i++){
-            if(i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
-            origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)),0);
-            else //se nao ele eh um simbolo nao terminal
-            origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)),1);
+        for (int i = 0; i < tabelaGramatica.getRowCount(); i++) {
+            if (i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
+            {
+                origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 0);
+            } else //se nao ele eh um simbolo nao terminal
+            {
+                origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 1);
+            }
 
-           List<String> listaProducoes = Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|"));
-            for (String s : listaProducoes){
+            List<String> listaProducoes = Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|"));
+            for (String s : listaProducoes) {
                 conjuntoProducoes = new Producao(origem);
-                adicionaUmaProducao(s , conjuntoProducoes);
+                adicionaUmaProducao(s, conjuntoProducoes);
             }
 
         }
@@ -371,7 +427,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_resetarGramaticaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -393,83 +449,92 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void resetaAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetaAutomatoActionPerformed
         automato.resetarAutomato();
         String alfabeto = retornaAlfabeto();
-        if(alfabeto == null)
+        if (alfabeto == null) {
             return;
-        while(alfabeto.isEmpty())
+        }
+        while (alfabeto.isEmpty()) {
             alfabeto = retornaAlfabeto();
-        
+        }
+
         List<String> nomeSimbolos = Arrays.asList(alfabeto.split("\\,"));
-            for (String s : nomeSimbolos)
-                automato.alfabeto.add(new SimboloAlfabeto(s));
-            
-            adicionarLinhaAutomato.setEnabled(true);
-            criarColunasAPartirDoAlfabeto();
+        for (String s : nomeSimbolos) {
+            automato.alfabeto.add(new SimboloAlfabeto(s));
+        }
+
+        adicionarLinhaAutomato.setEnabled(true);
+        criarColunasAPartirDoAlfabeto();
     }//GEN-LAST:event_resetaAutomatoActionPerformed
 
     private void salvarAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarAutomatoActionPerformed
-       int numLinhas = tabelaAutomato.getRowCount();
-       int numColunas = tabelaAutomato.getColumnCount();
-       data = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
-       for(int i = 0; i < tabelaAutomato.getRowCount(); i++){
-           for(int j = 0; j < tabelaAutomato.getColumnCount(); j++){
-               data[i][j] = tabelaAutomato.getValueAt(i, j);
-           }  
-       }
-       automato.tratarDadosEntrada(data, numLinhas,  numColunas);
+        int numLinhas = tabelaAutomato.getRowCount();
+        int numColunas = tabelaAutomato.getColumnCount();
+        data = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
+        System.out.println(numLinhas + " " + numColunas);
+        for (int i = 0; i < tabelaAutomato.getRowCount(); i++) {
+            for (int j = 0; j < tabelaAutomato.getColumnCount(); j++) {
+                data[i][j] = tabelaAutomato.getValueAt(i, j);
+            }
+        }
+        automato.tratarDadosEntrada(data, numLinhas, numColunas);
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
-    
+    private void determinizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_determinizarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_determinizarActionPerformed
+
     //GRAMATICA
     /**
-     * Adiciona um novo conjunto de producoes da gramatica a partir dos dados digitados pelo usuario.
+     * Adiciona um novo conjunto de producoes da gramatica a partir dos dados
+     * digitados pelo usuario.
+     *
      * @param s Producao a ser inserida na gramatica
-     * @param producao Producao à qual deve-se inserir um naoterminal e um terminal para a composicao da mesma.
+     * @param producao Producao à qual deve-se inserir um naoterminal e um
+     * terminal para a composicao da mesma.
      */
-    public void adicionaUmaProducao(String s, Producao producao){
-            producao.terminal = s.substring(0, 1);
-            try{
-                producao.naoTerminal = s.substring(1, 2);
-            } catch(Exception e){
-                producao.naoTerminal = "";
-            }
+    public void adicionaUmaProducao(String s, Producao producao) {
+        producao.terminal = s.substring(0, 1);
+        try {
+            producao.naoTerminal = s.substring(1, 2);
+        } catch (Exception e) {
+            producao.naoTerminal = "";
+        }
         producoesDaGramatica.add(producao);
     }
-    
-    
-    
+
     //AUTOMATO
     /**
      * Função que recebe um novo alfabeto quando ao automato é ressetado.
+     *
      * @return Um novo alfabeto
      */
-    public String retornaAlfabeto(){
+    public String retornaAlfabeto() {
         String alfabeto;
-        try{
+        try {
             alfabeto = JOptionPane.showInputDialog("Digite o alfabeto do seu autômato separado por virgulas, sem espaços. (Ex.a,b,c)");
-        }catch(Exception e){
+        } catch (Exception e) {
             return "";
         }
-        return alfabeto;      
+        return alfabeto;
     }
-    
+
     /**
      * Função que cria as colunas a partir do alfabeto inserido pelo usuario
      */
-    public void criarColunasAPartirDoAlfabeto(){   
-      columnNames = null;
-      data = new Object[0][0];
-      columnNames = new String[automato.alfabeto.size()+1];
+    public void criarColunasAPartirDoAlfabeto() {
+        columnNames = null;
+        data = new Object[0][0];
+        columnNames = new String[automato.alfabeto.size() + 1];
 
-      columnNames[0] = "δ";
-      for(int i = 0; i < automato.alfabeto.size(); i++){
-          columnNames[i] = automato.alfabeto.get(i).nome;
-      }
-      
-      modeloAutomato = new DefaultTableModel(data, columnNames);
-      tabelaAutomato.setModel(modeloAutomato);
-        
+        columnNames[0] = "δ";
+        for (int i = 0; i < automato.alfabeto.size(); i++) {
+            columnNames[i + 1] = automato.alfabeto.get(i).nome;
+        }
+
+        modeloAutomato = new DefaultTableModel(data, columnNames);
+        tabelaAutomato.setModel(modeloAutomato);
+
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -508,10 +573,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton adicionarLinhaAutomato;
     private javax.swing.JButton adicionarLinhaGramatica;
+    private javax.swing.JButton complementar;
+    private javax.swing.JButton determinizar;
+    private javax.swing.JButton interseccao;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -520,6 +589,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
+    private javax.swing.JButton minimizar;
     private javax.swing.JButton resetaAutomato;
     private javax.swing.JButton resetarGramatica;
     private javax.swing.JButton salvarAutomato;
