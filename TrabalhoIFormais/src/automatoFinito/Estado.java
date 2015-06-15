@@ -1,24 +1,30 @@
 package automatoFinito;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Estado {
+
     public String label;
     public TipoEstado tipo;
     public Set<Estado> antecessores, sucessores;
-    
-    public Estado(String l, int t){
+
+    public Estado() {
+
+    }
+
+    public Estado(String l, int t) {
         label = l;
         tipo = TipoEstado.retornaEstadoAPartir(t);
         antecessores = new HashSet<>();
         sucessores = new HashSet<>();
     }
-    
-     public Estado(String l, TipoEstado t){
+
+    public Estado(String l, TipoEstado t) {
         label = l;
         tipo = t;
         antecessores = new HashSet<>();
         sucessores = new HashSet<>();
     }
-    
+
 }

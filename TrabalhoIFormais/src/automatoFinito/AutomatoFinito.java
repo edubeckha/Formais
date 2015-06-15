@@ -1,15 +1,15 @@
 package automatoFinito;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class AutomatoFinito {
 
     public ArrayList<Estado> estados;
-    public ArrayList<SimboloAlfabeto> alfabeto;
+    public ArrayList<Character> alfabeto;
     public ArrayList<Mapeamento> mapeamentos;
     public Estado inicial;
     public ArrayList<Estado> estadosFinais;
+
 
     public AutomatoFinito() {
         estados = new ArrayList<>();
@@ -26,7 +26,7 @@ public class AutomatoFinito {
      * @param s Simbolo pertencente à transição
      * @param destino Estado de destino
      */
-    public void adicionarNovaFuncaoMapeamento(Estado q, SimboloAlfabeto s, Estado destino) {
+    public void adicionarNovaFuncaoMapeamento(Estado q, char s, Estado destino) {
         Mapeamento mapeamento = new Mapeamento(q, s, destino);
         q.sucessores.add(destino);
         destino.antecessores.add(q);

@@ -1,40 +1,39 @@
 package visao;
 
+import Transformacoes.TransformacoesAutomato;
 import automatoFinito.AutomatoFinito;
-import automatoFinito.SimboloAlfabeto;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import gramatica.modelo.Gramatica;
-import gramatica.modelo.Producao;
-import gramatica.modelo.Simbolo;
-import static java.lang.reflect.Array.set;
-import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 public class TelaPrincipal extends javax.swing.JFrame {
 
-    Object[][] data = null;
-    String[] columnNames = new String[1];
+    Object[][] dataAutomato = null;
+    Object[][] dataGramatica = null;
+    String[] nomeColunasAutomato = new String[1];
+    String[] nomeColunasGramatica = new String[3];
     DefaultTableModel modeloGramatica, modeloAutomato;
-    ArrayList<Producao> producoesDaGramatica;
-
-    Gramatica gramatica = Gramatica.retornaSingleton();
+    Gramatica gramatica = new Gramatica();
     AutomatoFinito automato = new AutomatoFinito();
 
     public TelaPrincipal() {
         initComponents();
-        columnNames[0] = "δ";
-        data = new Object[0][0];
+        nomeColunasAutomato[0] = "δ";
+        nomeColunasGramatica[0] = "N";
+        nomeColunasGramatica[1] = "Nao-Terminais";
+        nomeColunasGramatica[2] = "Lado Direito da Producao";
+        dataAutomato = new Object[0][0];
+        dataGramatica = new Object[0][0];
         inicializarComponentes();
     }
 
     public void inicializarComponentes() {
-        modeloGramatica = (DefaultTableModel) tabelaGramatica.getModel();
-        modeloAutomato = new DefaultTableModel(data, columnNames);
+        modeloGramatica = new DefaultTableModel(dataGramatica, nomeColunasGramatica);
+        modeloAutomato = new DefaultTableModel(dataAutomato, nomeColunasAutomato);
         tabelaAutomato.setModel(modeloAutomato);
-        producoesDaGramatica = new ArrayList<>();
+        tabelaGramatica.setModel(modeloGramatica);
     }
 
     /**
@@ -188,10 +187,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(adicionarLinhaGramatica)
-                    .addComponent(resetarGramatica)
-                    .addComponent(salvarGramatica))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(salvarGramatica, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(adicionarLinhaGramatica)
+                        .addComponent(resetarGramatica)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -267,11 +267,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
         });
 
         minimizar.setText("Minimizar");
+        minimizar.setPreferredSize(new java.awt.Dimension(93, 23));
+        minimizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                minimizarActionPerformed(evt);
+            }
+        });
 
         complementar.setText("Complementar");
+        complementar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                complementarActionPerformed(evt);
+            }
+        });
 
         interseccao.setText("Interseccao");
         interseccao.setToolTipText("");
+        interseccao.setPreferredSize(new java.awt.Dimension(93, 23));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -294,11 +306,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(determinizar)
-                    .addComponent(minimizar))
+                    .addComponent(minimizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(complementar)
-                    .addComponent(interseccao))
+                    .addComponent(interseccao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -396,26 +408,40 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void salvarGramaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarGramaticaActionPerformed
-        producoesDaGramatica.clear();
-        Simbolo origem;
-        Producao conjuntoProducoes;
+        gramatica.resetarGramatica();
+        int numLinhas = tabelaGramatica.getRowCount();
+        int numColunas = tabelaGramatica.getColumnCount();
+        dataGramatica = new Object[tabelaGramatica.getRowCount()][tabelaGramatica.getColumnCount()];
+        System.out.println(numLinhas + " " + numColunas);
         for (int i = 0; i < tabelaGramatica.getRowCount(); i++) {
-            if (i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
-            {
-                origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 0);
-            } else //se nao ele eh um simbolo nao terminal
-            {
-                origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 1);
+            for (int j = 0; j < tabelaGramatica.getColumnCount(); j++) {
+                dataGramatica[i][j] = tabelaGramatica.getValueAt(i, j);
             }
-
-            List<String> listaProducoes = Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|"));
-            for (String s : listaProducoes) {
-                conjuntoProducoes = new Producao(origem);
-                adicionaUmaProducao(s, conjuntoProducoes);
-            }
-
         }
-        gramatica.definirNovaGramatica(producoesDaGramatica);
+        gramatica.tratarDadosEntrada(dataGramatica, numLinhas, numColunas);
+
+        /*
+         producoesDaGramatica.clear();
+         Simbolo origem;
+         Producao conjuntoProducoes;
+         for (int i = 0; i < tabelaGramatica.getRowCount(); i++) {
+         if (i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
+         {
+         origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 0);
+         } else //se nao ele eh um simbolo nao terminal
+         {
+         origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 1);
+         }
+
+         List<String> listaProducoes = Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|"));
+         for (String s : listaProducoes) {
+         conjuntoProducoes = new Producao(origem);
+         adicionaUmaProducao(s, conjuntoProducoes);
+         }
+        
+         }
+
+         gramatica.definirNovaGramatica (producoesDaGramatica);*/
     }//GEN-LAST:event_salvarGramaticaActionPerformed
 
     private void adicionarLinhaGramaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarLinhaGramaticaActionPerformed
@@ -423,7 +449,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_adicionarLinhaGramaticaActionPerformed
 
     private void resetarGramaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarGramaticaActionPerformed
-        // TODO add your handling code here:
+        modeloGramatica.setRowCount(0);
+        gramatica.resetarGramatica();
     }//GEN-LAST:event_resetarGramaticaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -458,7 +485,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         List<String> nomeSimbolos = Arrays.asList(alfabeto.split("\\,"));
         for (String s : nomeSimbolos) {
-            automato.alfabeto.add(new SimboloAlfabeto(s));
+           automato.alfabeto.add( s.charAt(0));
         }
 
         adicionarLinhaAutomato.setEnabled(true);
@@ -468,19 +495,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void salvarAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarAutomatoActionPerformed
         int numLinhas = tabelaAutomato.getRowCount();
         int numColunas = tabelaAutomato.getColumnCount();
-        data = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
+        dataAutomato = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
         System.out.println(numLinhas + " " + numColunas);
         for (int i = 0; i < tabelaAutomato.getRowCount(); i++) {
             for (int j = 0; j < tabelaAutomato.getColumnCount(); j++) {
-                data[i][j] = tabelaAutomato.getValueAt(i, j);
+                dataAutomato[i][j] = tabelaAutomato.getValueAt(i, j);
             }
         }
-        automato.tratarDadosEntrada(data, numLinhas, numColunas);
+        automato.tratarDadosEntrada(dataAutomato, numLinhas, numColunas);
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
     private void determinizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_determinizarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_determinizarActionPerformed
+
+    private void complementarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_complementarActionPerformed
+        Transformacoes.TransformacoesAutomato tAut = new TransformacoesAutomato();
+        tAut.complementar(automato);
+    }//GEN-LAST:event_complementarActionPerformed
+
+    private void minimizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizarActionPerformed
+
+    }//GEN-LAST:event_minimizarActionPerformed
 
     //GRAMATICA
     /**
@@ -491,16 +527,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
      * @param producao Producao à qual deve-se inserir um naoterminal e um
      * terminal para a composicao da mesma.
      */
-    public void adicionaUmaProducao(String s, Producao producao) {
-        producao.terminal = s.substring(0, 1);
-        try {
-            producao.naoTerminal = s.substring(1, 2);
-        } catch (Exception e) {
-            producao.naoTerminal = "";
-        }
-        producoesDaGramatica.add(producao);
-    }
-
+    /*public void adicionaUmaProducao(String s, Producao producao) {
+     producao.origem = new Simbolo(s, 1);
+     producao.terminal = new SimboloAlfabeto(s.substring(0, 1));
+     try {
+     producao.naoTerminal = new Simbolo(s.substring(1, 2), 1);
+     } catch (Exception e) {
+     producao.naoTerminal = new Simbolo("", 1);
+     }
+     producoesDaGramatica.add(producao);
+     }*/
     //AUTOMATO
     /**
      * Função que recebe um novo alfabeto quando ao automato é ressetado.
@@ -521,17 +557,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
      * Função que cria as colunas a partir do alfabeto inserido pelo usuario
      */
     public void criarColunasAPartirDoAlfabeto() {
-        columnNames = null;
-        data = new Object[0][0];
-        columnNames = new String[automato.alfabeto.size() + 1];
+        dataAutomato = new Object[0][0];
 
-        columnNames[0] = "δ";
+        nomeColunasAutomato = new String[automato.alfabeto.size() + 1];
+
+        nomeColunasAutomato[0] = "δ";
         for (int i = 0; i < automato.alfabeto.size(); i++) {
-            columnNames[i + 1] = automato.alfabeto.get(i).nome;
+            nomeColunasAutomato[i + 1] = automato.alfabeto.get(i).toString();
         }
 
-        modeloAutomato = new DefaultTableModel(data, columnNames);
+        modeloAutomato = new DefaultTableModel(dataAutomato, nomeColunasAutomato);
         tabelaAutomato.setModel(modeloAutomato);
+        
 
     }
 
@@ -549,16 +586,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 

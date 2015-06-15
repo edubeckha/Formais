@@ -3,14 +3,13 @@ package Transformacoes;
 import automatoFinito.AutomatoFinito;
 import automatoFinito.Estado;
 import automatoFinito.Mapeamento;
-import automatoFinito.SimboloAlfabeto;
 import automatoFinito.TipoEstado;
 import java.util.ArrayList;
 
 public class TransformacoesAutomato {
 
     /**
-     * Função responsável por determinizar o automato T(M), gerando um novo
+     * FunÃ§Ã£o responsÃ¡vel por determinizar o automato T(M), gerando um novo
      * automato T(M') e mostrando-o ao usuario.
      */
     public void determinizar(AutomatoFinito automato) {
@@ -18,7 +17,7 @@ public class TransformacoesAutomato {
     }
 
     /**
-     * Função responsável por complementar o automato em questao T(M)
+     * FunÃ§Ã£o responsÃ¡vel por complementar o automato em questao T(M)
      */
     public void complementar(AutomatoFinito automato) {
         determinizar(automato);
@@ -52,8 +51,8 @@ public class TransformacoesAutomato {
     }
 
     /**
-     * Função responsável por verificar se o automato em questao é completo e
-     * completa-lo caso seja necessario
+     * FunÃ§Ã£o responsÃ¡vel por verificar se o automato em questao Ã© completo
+     * e completa-lo caso seja necessario
      *
      */
     public void verificaETransformaCompleto(AutomatoFinito automato) {
@@ -74,14 +73,14 @@ public class TransformacoesAutomato {
     }
 
     /**
-     * Função responsável por minimizar o autômato
+     * FunÃ§Ã£o responsÃ¡vel por minimizar o autÃ´mato
      */
     public void minimizar(AutomatoFinito automato) {
 
     }
 
     /**
-     * Função responsável por intersectar dois automatos
+     * FunÃ§Ã£o responsÃ¡vel por intersectar dois automatos
      *
      * @param segundoAutomato Automato a ser intersectado com o automato atual
      */
@@ -90,15 +89,16 @@ public class TransformacoesAutomato {
         complementar(automato);
         complementar(segundoAutomato);
         automato = uniao(automato, segundoAutomato);
-        complementar(automato); 
+        complementar(automato);
     }
 
-  /**
-   * Função responsável por unir dois autômatos
-   * @param automato
-   * @param segundoAutomato
-   * @return 
-   */
+    /**
+     * FunÃ§Ã£o responsÃ¡vel por unir dois autÃ´matos
+     *
+     * @param automato
+     * @param segundoAutomato
+     * @return
+     */
     public AutomatoFinito uniao(AutomatoFinito automato, AutomatoFinito segundoAutomato) {
         AutomatoFinito temp = new AutomatoFinito();
         Estado tmpInicial;
@@ -107,28 +107,33 @@ public class TransformacoesAutomato {
         if (automato.inicial.tipo == TipoEstado.INICIALFINAL || segundoAutomato.inicial.tipo == TipoEstado.INICIALFINAL) {
             tmpInicial.tipo = TipoEstado.INICIALFINAL;
         }
- 
+
         temp.inicial = tmpInicial;
         populaAutomato(temp, automato);
         populaAutomato(temp, segundoAutomato);
         return temp;
     }
-    public void populaAutomato(AutomatoFinito temp, AutomatoFinito automato){
-         for (Mapeamento mapeamento : automato.mapeamentos) {
+
+    public void populaAutomato(AutomatoFinito temp, AutomatoFinito automato) {
+        for (Mapeamento mapeamento : automato.mapeamentos) {
             if (mapeamento.estadoOrigem == automato.inicial) {
                 temp.mapeamentos.add(new Mapeamento(temp.inicial, mapeamento.terminalTransicao, mapeamento.estadoDestino));
             } else {
                 temp.mapeamentos.add(mapeamento);
             }
         }
-          if(automato.inicial.tipo == TipoEstado.INICIALFINAL ? automato.inicial.tipo 
+        if (automato.inicial.tipo == TipoEstado.INICIALFINAL ? automato.inicial.tipo
                 == TipoEstado.FINAL : automato.inicial.tipo == TipoEstado.NAOFINAL);
         temp.estados.addAll(automato.estados);
         temp.estadosFinais.addAll(automato.estadosFinais);
-        
+
         //nao adicionando simbolos repetidos no alfabeto
-        for(SimboloAlfabeto sim : automato.alfabeto)
-            if(!temp.alfabeto.contains(sim))
-                temp.alfabeto.add(sim);
+//        for (String sim : automato.alfabeto.toArray()) {
+        for (int i = 0; i < automato.alfabeto.size(); i++) {
+            String sim = automato.alfabeto.toString();
+            if (!temp.alfabeto.contains(sim.charAt(0))) {
+                temp.alfabeto.add(sim.charAt(0));
+            }
+        }
     }
 }
