@@ -12,12 +12,23 @@ public class TransformacoesAutomato {
      * FunÃ§Ã£o responsÃ¡vel por determinizar o automato T(M), gerando um novo
      * automato T(M') e mostrando-o ao usuario.
      */
-    public void determinizar(AutomatoFinito automato) {
+    public static void determinizar(AutomatoFinito automato) {
+        ArrayList<Estado> estados = new ArrayList<>();
+        for (Estado estado : automato.estados) {
+            for (Character c : automato.alfabeto) {
+                for (Mapeamento mapeamento : automato.mapeamentos) {
+                    if (mapeamento.estadoOrigem.equals(estado)) {
+                        estados.add(mapeamento.estadoDestino);
+                    }
+                }
+            }
+
+        }
 
     }
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por complementar o automato em questao T(M)
+     * Funcao responsavel por complementar o automato em questao T(M)
      */
     public void complementar(AutomatoFinito automato) {
         determinizar(automato);
@@ -38,6 +49,9 @@ public class TransformacoesAutomato {
                     break;
                 case INICIALFINAL:
                     estado.tipo = TipoEstado.INICIAL;
+                    break;
+                case ERRO:
+                    estado.tipo = TipoEstado.FINAL;
             }
         }
 
@@ -51,8 +65,8 @@ public class TransformacoesAutomato {
     }
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por verificar se o automato em questao Ã© completo
-     * e completa-lo caso seja necessario
+     * Funcao responsavel por verificar se o automato em questao eh completo e
+     * completa-lo caso seja necessario
      *
      */
     public void verificaETransformaCompleto(AutomatoFinito automato) {
@@ -60,20 +74,14 @@ public class TransformacoesAutomato {
             if (mapeamento.estadoDestino.label.equals("-")) {
                 break;
             }
-            return;
-        }
-        Estado qE = new Estado("qE", 4); //cria e adiociona o estado de erro
-        automato.estados.add(qE);
-
-        for (Mapeamento mapeamento : automato.mapeamentos) {
             if (mapeamento.estadoDestino.label.equals("-")) {
-                mapeamento.estadoDestino = qE;
+                mapeamento.estadoDestino = automato.erro;
             }
         }
     }
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por minimizar o autÃ´mato
+     * Funcao responsavel por minimizar o automato
      */
     public void minimizar(AutomatoFinito automato) {
 
@@ -126,9 +134,6 @@ public class TransformacoesAutomato {
                 == TipoEstado.FINAL : automato.inicial.tipo == TipoEstado.NAOFINAL);
         temp.estados.addAll(automato.estados);
         temp.estadosFinais.addAll(automato.estadosFinais);
-
-        //nao adicionando simbolos repetidos no alfabeto
-//        for (String sim : automato.alfabeto.toArray()) {
         for (int i = 0; i < automato.alfabeto.size(); i++) {
             String sim = automato.alfabeto.toString();
             if (!temp.alfabeto.contains(sim.charAt(0))) {

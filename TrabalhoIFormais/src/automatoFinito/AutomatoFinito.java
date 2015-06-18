@@ -1,6 +1,8 @@
 package automatoFinito;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class AutomatoFinito {
 
@@ -9,30 +11,13 @@ public class AutomatoFinito {
     public ArrayList<Mapeamento> mapeamentos;
     public Estado inicial;
     public ArrayList<Estado> estadosFinais;
-
-
+    public Estado erro;
+    
     public AutomatoFinito() {
         estados = new ArrayList<>();
         alfabeto = new ArrayList<>();
         mapeamentos = new ArrayList<>();
         estadosFinais = new ArrayList<>();
-    }
-
-    /**
-     * Função que adiciona uma nova função de mapeamento na estrutura do
-     * autômato
-     *
-     * @param q Estado de origem
-     * @param s Simbolo pertencente à transição
-     * @param destino Estado de destino
-     */
-    public void adicionarNovaFuncaoMapeamento(Estado q, char s, Estado destino) {
-        Mapeamento mapeamento = new Mapeamento(q, s, destino);
-        q.sucessores.add(destino);
-        destino.antecessores.add(q);
-        estados.add(q);
-        estados.add(destino);
-        alfabeto.add(s);
     }
 
     /**
@@ -54,20 +39,37 @@ public class AutomatoFinito {
      * @param numColunas numero de colunas da minha tabela do automato
      */
     public void tratarDadosEntrada(Object[][] dados, int numLinhas, int numColunas) {
-        for (int j = 0; j < numColunas; j++) {
-            processadorEstados(String.valueOf(dados[0][j]));
+        Estado e = new Estado("-", TipoEstado.ERRO);
+        estados.add(e);
+        erro = e;
+        for (int j = 0; j < numLinhas; j++) {
+            processadorEstados(String.valueOf(dados[j][0]));
         }
         criaFuncoesMapeamento(dados, numLinhas, numColunas);
     }
 
     public void criaFuncoesMapeamento(Object[][] dados, int numLinhas, int numColunas) {
-        for (int i = 0; i < numLinhas; i++) {
-            for (int j = 0; j < numColunas; j++) {
-                //Mapeamento mapea = new Mapeamento(inicial, null, inicial)
-            }
-        }
+       for(int i = 0; i < numLinhas; i++){
+           adicionaMapeamentos(dados[i]);
+       }
+        
     }
-
+    
+    public void adicionaMapeamentos(Object[] mapeamento){
+        String umMap = mapeamento[0].toString();
+        String nomeEst = umMap.substring(umMap.length()-1, umMap.length());
+        
+        Estado origem = retornaEstadoAPartirDeLabel(nomeEst);
+        
+        for(int i = 1; i < mapeamento.length; i++){
+            List<String> nomeEstados = Arrays.asList(String.valueOf(mapeamento[i]).split("\\,"));
+        for (String nomeEstado : nomeEstados) {
+            String nE = nomeEstado.substring(nomeEstado.length()-1, nomeEstado.length());
+            mapeamentos.add(new Mapeamento(origem, alfabeto.get(i-1), retornaEstadoAPartirDeLabel(nE)));
+        }     
+        }
+        
+    }
     /**
      * Processa as strings que sao enviadas para essa funcao. Nesse
      * processamento verificamos o tipo de estado do automato e populamos as
@@ -107,7 +109,7 @@ public class AutomatoFinito {
     }
 
     public Estado retornaEstadoAPartirDeLabel(String label) {
-        Estado estado = null;
+        Estado estado = erro;
         for (Estado est : estados) {
             if (est.label.equals(label)) {
                 estado = est;

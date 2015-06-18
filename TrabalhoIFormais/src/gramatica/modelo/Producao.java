@@ -7,7 +7,7 @@ public class Producao {
         origem = o;
     }
     
-    public Producao(Simbolo o, Simbolo nt, Simbolo term){
+    public Producao(Simbolo o, Simbolo term, Simbolo nt){
         origem = o;
         naoTerminal = nt;
         terminal = term;

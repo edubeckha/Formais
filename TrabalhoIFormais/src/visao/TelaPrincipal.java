@@ -2,6 +2,8 @@ package visao;
 
 import Transformacoes.TransformacoesAutomato;
 import automatoFinito.AutomatoFinito;
+import expressaoRegular.Arvore;
+import expressaoRegular.ExpressaoRegular;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -17,11 +19,16 @@ public class TelaPrincipal extends javax.swing.JFrame {
     String[] nomeColunasAutomatoER = new String[3];
     String[] nomeColunasGramatica = new String[3];
     DefaultTableModel modeloGramatica, modeloAutomato, modeloAutomatoER;
-    Gramatica gramatica = new Gramatica();
-    AutomatoFinito automato = new AutomatoFinito();
-    AutomatoFinito automatoER = new AutomatoFinito();
+    Gramatica gramatica;
+    AutomatoFinito automato;
+    AutomatoFinito automatoER;
+    ExpressaoRegular expressaoRegular = new ExpressaoRegular();
+
 
     public TelaPrincipal() {
+        automato = new AutomatoFinito();
+        automatoER = new AutomatoFinito();
+        gramatica = new Gramatica();
         initComponents();
         nomeColunasAutomato[0] = "δ";
         nomeColunasAutomatoER[0] = "δ";
@@ -67,6 +74,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         tabelaExpressaoAutomato = new javax.swing.JTable();
         transformarER = new javax.swing.JButton();
         resetarER = new javax.swing.JButton();
+        gramaticaAutomato = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jTextField5 = new javax.swing.JTextField();
@@ -78,6 +86,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         minimizar = new javax.swing.JButton();
         complementar = new javax.swing.JButton();
         interseccao = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabelaAutomato = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
@@ -192,12 +201,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tabelaExpressaoAutomato);
 
         transformarER.setText("Transformar ER para AF");
-        transformarER.setActionCommand("Transformar ER para AF");
+        transformarER.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transformarERActionPerformed(evt);
+            }
+        });
 
         resetarER.setText("Resetar ER/AF");
         resetarER.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetarERActionPerformed(evt);
+            }
+        });
+
+        gramaticaAutomato.setText("GR -> AF");
+        gramaticaAutomato.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gramaticaAutomatoActionPerformed(evt);
             }
         });
 
@@ -208,24 +228,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                     .addComponent(ER)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(adicionarLinhaGramatica)
-                                .addGap(18, 18, 18)
-                                .addComponent(resetarGramatica)
-                                .addGap(18, 18, 18)
-                                .addComponent(salvarGramatica))
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(transformarER)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(resetarER)))
+                        .addComponent(resetarER))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(resetarGramatica, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(adicionarLinhaGramatica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField2)
+                                    .addComponent(jTextField3))
+                                .addGap(49, 49, 49)
+                                .addComponent(gramaticaAutomato, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(salvarGramatica)))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -236,12 +260,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(salvarGramatica, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(adicionarLinhaGramatica)
-                        .addComponent(resetarGramatica)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(adicionarLinhaGramatica)
+                    .addComponent(salvarGramatica, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gramaticaAutomato))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetarGramatica)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,8 +274,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(transformarER)
                     .addComponent(resetarER))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -322,19 +347,28 @@ public class TelaPrincipal extends javax.swing.JFrame {
         interseccao.setToolTipText("");
         interseccao.setPreferredSize(new java.awt.Dimension(93, 23));
 
+        jButton2.setText("AF -> GR");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(complementar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(determinizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(minimizar, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(interseccao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(determinizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(complementar, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(interseccao, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                    .addComponent(minimizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -343,7 +377,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(determinizar)
-                    .addComponent(minimizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(minimizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(complementar)
@@ -378,16 +413,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(adicionarLinhaAutomato)
-                                .addGap(18, 18, 18)
-                                .addComponent(resetaAutomato)
-                                .addGap(18, 18, 18)
-                                .addComponent(salvarAutomato)))
-                        .addGap(0, 14, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
+                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(adicionarLinhaAutomato)
+                        .addGap(62, 62, 62)
+                        .addComponent(resetaAutomato)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(salvarAutomato)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -404,7 +438,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     .addComponent(salvarAutomato))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -415,11 +449,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,9 +480,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -474,29 +511,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         }
         gramatica.tratarDadosEntrada(dataGramatica, numLinhas, numColunas);
-
-        /*
-         producoesDaGramatica.clear();
-         Simbolo origem;
-         Producao conjuntoProducoes;
-         for (int i = 0; i < tabelaGramatica.getRowCount(); i++) {
-         if (i == 0) //se ele eh o simbolo inicial da gramatica eh o simbolo inicial da gramatica
-         {
-         origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 0);
-         } else //se nao ele eh um simbolo nao terminal
-         {
-         origem = new Simbolo(String.valueOf(tabelaGramatica.getValueAt(i, 1)), 1);
-         }
-
-         List<String> listaProducoes = Arrays.asList(String.valueOf(tabelaGramatica.getValueAt(i, 2)).split("\\|"));
-         for (String s : listaProducoes) {
-         conjuntoProducoes = new Producao(origem);
-         adicionaUmaProducao(s, conjuntoProducoes);
-         }
-        
-         }
-
-         gramatica.definirNovaGramatica (producoesDaGramatica);*/
     }//GEN-LAST:event_salvarGramaticaActionPerformed
 
     private void adicionarLinhaGramaticaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adicionarLinhaGramaticaActionPerformed
@@ -548,20 +562,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_resetaAutomatoActionPerformed
 
     private void salvarAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarAutomatoActionPerformed
-        int numLinhas = tabelaExpressaoAutomato.getRowCount();
-        int numColunas = tabelaExpressaoAutomato.getColumnCount();
-        dataAutomato = new Object[tabelaExpressaoAutomato.getRowCount()][tabelaExpressaoAutomato.getColumnCount()];
+        int numLinhas = tabelaAutomato.getRowCount();
+        int numColunas = tabelaAutomato.getColumnCount();
+        dataAutomato = new Object[tabelaAutomato.getRowCount()][tabelaAutomato.getColumnCount()];
         System.out.println(numLinhas + " " + numColunas);
-        for (int i = 0; i < tabelaExpressaoAutomato.getRowCount(); i++) {
-            for (int j = 0; j < tabelaExpressaoAutomato.getColumnCount(); j++) {
-                dataAutomato[i][j] = tabelaExpressaoAutomato.getValueAt(i, j);
+        for (int i = 0; i < tabelaAutomato.getRowCount(); i++) {
+            for (int j = 0; j < tabelaAutomato.getColumnCount(); j++) {
+                dataAutomato[i][j] = tabelaAutomato.getValueAt(i, j);
             }
         }
         automato.tratarDadosEntrada(dataAutomato, numLinhas, numColunas);
     }//GEN-LAST:event_salvarAutomatoActionPerformed
 
     private void determinizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_determinizarActionPerformed
-        // TODO add your handling code here:
+       TransformacoesAutomato.determinizar(automato);
     }//GEN-LAST:event_determinizarActionPerformed
 
     private void complementarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_complementarActionPerformed
@@ -579,8 +593,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_resetarERActionPerformed
 
     private void ERActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ERActionPerformed
-        // TODO add your handling code here:
+         ER.getText();
     }//GEN-LAST:event_ERActionPerformed
+
+    private void gramaticaAutomatoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gramaticaAutomatoActionPerformed
+
+    }//GEN-LAST:event_gramaticaAutomatoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+       Gramatica g = Transformacoes.Transformacoes.automatoParaGramatica(automato);
+       modeloGramatica.setRowCount(0);
+       gramatica = g;
+       //falta passar a info pra tela
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void transformarERActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transformarERActionPerformed
+        AutomatoFinito afFromER = expressaoRegular.montaAutomato(new Arvore(ER.getText()));
+    }//GEN-LAST:event_transformarERActionPerformed
 
     //GRAMATICA
     /**
@@ -631,7 +660,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
 
         modeloAutomato = new DefaultTableModel(dataAutomato, nomeColunasAutomato);
-        tabelaExpressaoAutomato.setModel(modeloAutomato);
+        tabelaAutomato.setModel(modeloAutomato);
 
     }
 
@@ -681,8 +710,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton adicionarLinhaGramatica;
     private javax.swing.JButton complementar;
     private javax.swing.JButton determinizar;
+    private javax.swing.JButton gramaticaAutomato;
     private javax.swing.JButton interseccao;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

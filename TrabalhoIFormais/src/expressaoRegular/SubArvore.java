@@ -14,7 +14,7 @@ class SubArvore {
     private static final Map<Character, Integer> precedencia = new HashMap<Character, Integer>();
 
 	// Ao construir a subarvore atribui os valores de precedencia
-	// para cada operador unario ou não das expressões regulares.
+    // para cada operador unario ou não das expressões regulares.
     public SubArvore() {
         precedencia.put('*', 1);
         precedencia.put('?', 1);

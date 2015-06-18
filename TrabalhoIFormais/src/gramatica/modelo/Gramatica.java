@@ -2,19 +2,19 @@ package gramatica.modelo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Gramatica {
 
-    public ArrayList<Simbolo> naoTerminais;
-    public ArrayList<Simbolo> terminais;
     public ArrayList<Producao> producoes;
     public Simbolo simboloInicial;
+    public Set<Character> alfabeto;
 
     public Gramatica() {
-        naoTerminais = new ArrayList<>();
-        terminais = new ArrayList<>();
         producoes = new ArrayList<>();
+        alfabeto = new LinkedHashSet<>();
     }
 
     /**
@@ -40,34 +40,20 @@ public class Gramatica {
                 adicionaUmaProducao(origem, s);
             }
         }
-
-        definirTerminaisNaoTerminais();
-
     }
 
     public void adicionaUmaProducao(Simbolo origem, String s) {
-        Producao tmp = new Producao(origem);
-        tmp.terminal = new Simbolo(s.substring(0, 1), 2);
+        Simbolo terminal = new Simbolo(s.substring(0, 1), 2);
+        Simbolo naoTerminal;
 
         try {
-            tmp.naoTerminal = new Simbolo(s.substring(1, 2), 1);
+            naoTerminal = new Simbolo(s.substring(1, 2), 1);
         } catch (Exception e) {
-            tmp.naoTerminal = new Simbolo("", 1);
+            naoTerminal = new Simbolo("", 1);
         }
-        producoes.add(tmp);
-    }
 
-    /**
-     * Define um conjunto de terminais a partir das producoes da gramatica
-     */
-    public void definirTerminaisNaoTerminais() {
-        for (Producao prod : producoes) {
-            String naoTerminal = prod.naoTerminal.nome;
-            if (!naoTerminal.isEmpty()) {
-                naoTerminais.add(new Simbolo(prod.naoTerminal.nome, 1));
-            }
-            terminais.add(new Simbolo(prod.terminal.nome, 2));
-        }
+        Producao producao = new Producao(origem, terminal, naoTerminal);
+        producoes.add(producao);
     }
 
     /**
@@ -75,8 +61,20 @@ public class Gramatica {
      */
     public void resetarGramatica() {
         producoes.clear();
-        naoTerminais.clear();
-        terminais.clear();
         simboloInicial = null;
+    }
+
+    /**
+     * Verifica se o simbolo inicial tem uma producao que vai para &
+     *
+     * @return flag que mostra se vai para &
+     */
+    public boolean inicialVaiPraEpsilon() {
+        for (Producao prod : producoes) {
+            if (prod.origem.equals(simboloInicial) && prod.naoTerminal.nome.equals("&")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,4 +1,5 @@
 package expressaoRegular;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -13,8 +14,8 @@ public class Arvore {
     // Construtor da arvore
     // Recebe por parametro uma String que representa a expressão regular.
     public Arvore(String expressao) {
-    	// Localiza o operador de menor precedencia da expressão para usar como raiz da arvore.
-    	// A partir da raiz monta a arvore com a expressão regular.
+        // Localiza o operador de menor precedencia da expressão para usar como raiz da arvore.
+        // A partir da raiz monta a arvore com a expressão regular.
         raiz = montaSubArvore(null, expressao);
         // Utilizado na costura
         Stack<Nodo> operadores = new Stack<>();
@@ -50,25 +51,25 @@ public class Arvore {
 
     // Faz a costura da arvore, para cada elemento na lista de folhas vai ser costurado para o seu pai
     // se o pai ja foi costurado.
-    private void costurarEmPosOrder(Nodo raiz, Stack<Nodo> operadores) {
-        if (raiz == null) {
+    private void costurarEmPosOrder(Nodo nodo, Stack<Nodo> operadores) {
+        if (nodo == null) {
             return;
         }
-        if (ehOperador(raiz.simbolo)) {
-            operadores.push(raiz);
+        if (ehOperador(nodo.simbolo)) {
+            operadores.push(nodo);
         } else {
-            Nodo auxiliar = raiz;
-            while (ehOperadorUnario(auxiliar.simbolo)) {
+            Nodo auxiliar = nodo;
+            do {
                 auxiliar.costura = operadores.pop();
                 auxiliar = auxiliar.costura;
                 // costura para lambda
                 if (auxiliar == null) {
                     break;
                 }
-            }
+            } while (ehOperadorUnario(auxiliar.simbolo));
         }
-        costurarEmPosOrder(raiz.fEsquerda, operadores);
-        costurarEmPosOrder(raiz.fDireita, operadores);
+        costurarEmPosOrder(nodo.fEsquerda, operadores);
+        costurarEmPosOrder(nodo.fDireita, operadores);
     }
 
     // Gera a lista de folhas da arvore 
@@ -127,7 +128,6 @@ public class Arvore {
         }
     }
 
-
     // Verifica se um dado simbolo é um operador válido.
     private boolean ehOperador(char simbolo) {
         return (simbolo == '.' || simbolo == '|' || simbolo == '*' || simbolo == '?');
@@ -137,45 +137,4 @@ public class Arvore {
     private boolean ehOperadorUnario(char simbolo) {
         return simbolo == '*' || simbolo == '?';
     }
-
-
-//    // Funções para teste da arvore
-//		=====================================================
-//    @Override
-//    public String toString() {
-//        Nodo a = raiz;
-//        String volta = "Raiz: ";
-//        do {
-//            volta += "Simbolo: " + a.simbolo + "\n";
-//            if (a.fEsquerda != null) {
-//                a = a.fEsquerda;
-//                volta += "\nesquerda\n";
-//            } else {
-//                a = a.fDireita;
-//                volta += "\ndireita\n";
-//            }
-//
-//        } while (a != null);
-//        a = raiz;
-//        volta += "\nraiz: ";
-//        do {
-//            volta += "Simbolo: " + a.simbolo + "\n";
-//            if (a.fDireita != null) {
-//                a = a.fDireita;
-//                volta += "\ndireita\n";
-//            } else {
-//                a = a.fEsquerda;
-//                volta += "\nesquerda\n";
-//            }
-//
-//        } while (a != null);
-//        return volta;
-//    }
-//
-//    public static void main(String[] args) {
-//        Nodo nd = new Nodo('a', null);
-//        System.out.println(nd.mostra());
-//        Arvore av = new Arvore("a*.(b?.c|d)*");
-//        System.out.println("a*.(b?.c|d)*\n" + av.toString());
-//    }
 }

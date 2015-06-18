@@ -63,7 +63,7 @@ public class ExpressaoRegular {
     }
 
     public void percorrimentoDaArvore(Nodo nodo, boolean direcao, List<Nodo> composicaoEstado, List<JaPercorrido> passeiApartirDaRaiz) {
-        if (composicaoEstado.contains(nodo)) {
+        if (composicaoEstado.contains(nodo) || nodo.simbolo == '&') {
             return;
         }
         char simboloNodo = nodo.simbolo;
@@ -135,7 +135,6 @@ public class ExpressaoRegular {
                     break;
             }
         }
-
     }
 
     public int existeEquivalente(List<Nodo> comporNovoEstado, List<CompoeEstado> compoeAtual) {
@@ -171,14 +170,17 @@ public class ExpressaoRegular {
     private AutomatoFinito transformaListaDeEstadosEmAutomato(List<CompoeEstado> estados, List<Character> alfabeto) {
         AutomatoFinito automato = new AutomatoFinito();
         automato.alfabeto = (ArrayList<Character>) alfabeto;
-        Estado inicial = null;
+        Estado inicial = new Estado();
         if (ehEstadoFinal(estados.get(0).componentes)) {
             inicial = new Estado("q0", 3);
+            inicial.label = estados.get(0).estado;
+        } else {
+            inicial = new Estado("q0", 0);
             inicial.label = estados.get(0).estado;
         }
         automato.inicial = new Estado();
         automato.estados.add(inicial);
-        if (inicial.tipo.equals(3)) {
+        if (inicial.tipo == TipoEstado.INICIALFINAL) {
             automato.estadosFinais.add(inicial);
         } else {
             automato.estados.add(inicial);
@@ -198,18 +200,18 @@ public class ExpressaoRegular {
             }
             automato.estados.add(novoEstado);
         }
-        //agora que ja tenho as listas com os estados sÃ³ falta criar as funÃ§Ãµes
-        for (int i = 0; i < automato.estados.size(); i++) {
+        //cria os mapeamentos
+        for (int i = 0; i < estados.size(); i++) {
             for (int j = 0; j < estados.get(i).transicao.size(); j++) {
-                Mapeamento funcao = new Mapeamento();
-                funcao.idDaTransicao = automato.estados.get(i).label + estados.get(i).transicao.get(j).proximo.estado;
-                funcao.estadoOrigem = automato.estados.get(i);
-                funcao.terminalTransicao = estados.get(i).transicao.get(j).simbolo;
-                funcao.estadoOrigem = automato.estados.get(pegarEstado(automato.estados, estados.get(i).transicao.get(j).proximo.estado));
-                automato.mapeamentos.add(funcao);
+                Mapeamento mapeando = new Mapeamento();
+                mapeando.idDaTransicao = automato.estados.get(i).label + estados.get(i).transicao.get(j).proximo.estado;
+                mapeando.estadoOrigem = automato.estados.get(i);
+                mapeando.terminalTransicao = estados.get(i).transicao.get(j).simbolo;
+                mapeando.estadoDestino = automato.estados.get(pegarEstado(automato.estados, estados.get(i).transicao.get(j).proximo.estado));
+                automato.mapeamentos.add(mapeando);
             }
         }
-        return null;
+        return automato;
     }
 
     private List<Nodo> compoeEntrada(List<Nodo> compoe, char entrada) {

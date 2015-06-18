@@ -3,15 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/gramatica/modelo/Simbolo.java</file>
             <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/visao/TelaPrincipal.java</file>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/automatoFinito/Mapeamento.java</file>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/Transformacoes/Transformacoes.java</file>
             <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/Transformacoes/TransformacoesAutomato.java</file>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/gramatica/modelo/Producao.java</file>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/automatoFinito/AutomatoFinito.java</file>
+            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/Transformacoes/Transformacoes.java</file>
             <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/gramatica/modelo/Gramatica.java</file>
-            <file>file:/C:/Users/Eduardo/Desktop/GitHub/Formais/TrabalhoIFormais/src/gramatica/modelo/TipoSimbolo.java</file>
         </group>
     </open-files>
 </project-private>
