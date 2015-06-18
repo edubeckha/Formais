@@ -584,7 +584,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_complementarActionPerformed
 
     private void minimizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minimizarActionPerformed
-
+            TransformacoesAutomato.minimizar(automato);
     }//GEN-LAST:event_minimizarActionPerformed
 
     private void resetarERActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetarERActionPerformed

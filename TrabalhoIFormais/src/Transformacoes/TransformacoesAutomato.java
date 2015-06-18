@@ -5,6 +5,9 @@ import automatoFinito.Estado;
 import automatoFinito.Mapeamento;
 import automatoFinito.TipoEstado;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class TransformacoesAutomato {
 
@@ -13,17 +16,7 @@ public class TransformacoesAutomato {
      * automato T(M') e mostrando-o ao usuario.
      */
     public static void determinizar(AutomatoFinito automato) {
-        ArrayList<Estado> estados = new ArrayList<>();
-        for (Estado estado : automato.estados) {
-            for (Character c : automato.alfabeto) {
-                for (Mapeamento mapeamento : automato.mapeamentos) {
-                    if (mapeamento.estadoOrigem.equals(estado)) {
-                        estados.add(mapeamento.estadoDestino);
-                    }
-                }
-            }
-
-        }
+     
 
     }
 
@@ -83,12 +76,100 @@ public class TransformacoesAutomato {
     /**
      * Funcao responsavel por minimizar o automato
      */
-    public void minimizar(AutomatoFinito automato) {
-
+    public static void minimizar(AutomatoFinito automato) {
+        determinizar(automato);
+        retiraInferteis(automato);
+        retiraInalcancáveis(automato);
     }
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por intersectar dois automatos
+     * Metodo responsavel por retirar simbolos inuteis do automato em questao
+     *
+     * @param automato
+     */
+    public static void retiraInferteis(AutomatoFinito automato) {
+        Set<Estado> ferteis = new LinkedHashSet<>();
+        
+        //coloca no set de ferteis todos os simbolos ferteis
+        for (Estado estado : automato.estadosFinais) {
+            ferteis.add(estado);
+        }
+
+        //adiciona nos ferteis todo simbolo que chega a um nao-terminal fertil...
+        for (int i = 0; i < automato.estados.size(); i++) {
+            for (Mapeamento mapeamento : automato.mapeamentos) {
+                if (ferteis.contains(mapeamento.estadoDestino)) {
+                    ferteis.add(mapeamento.estadoOrigem);
+                }
+            }
+        }
+
+        //retira do conjunto de mapeamentos todo mapeamento que contem um simbolo nao-fertil (sendo do lado esquerdo ou direito da producao).
+        for (Iterator<Mapeamento> it = automato.mapeamentos.iterator(); it.hasNext();) {
+            Mapeamento mapeamento = it.next();
+            if (!ferteis.contains(mapeamento.estadoOrigem) || !ferteis.contains(mapeamento.estadoDestino)) {
+                it.remove();
+            }
+        }
+
+        //retira todos os estados inferteis do conjunto de estados
+        Iterator<Estado> it = automato.estados.iterator();
+        while (it.hasNext()) {
+            Estado estado = it.next();
+            if (!ferteis.contains(estado)) {
+                it.remove();
+            }
+        }
+    }
+
+    /**
+     * Metodo responsavel por retirar simbolos inalcancaveis do automato
+     *
+     * @param automato
+     */
+    public static void retiraInalcancáveis(AutomatoFinito automato) {
+        Set<Estado> alcancaveis = new LinkedHashSet<>();
+        //o simbolo inicial eh sempre alcancavel...
+        alcancaveis.add(automato.inicial);
+
+        
+        //coloca em alcancaveis todos os simbolos alcancaveis a partir de outro simbolo ja alcancavel
+        for (int i = 0; i < automato.estados.size(); i++) {
+            for (Mapeamento mapeamento : automato.mapeamentos) {
+                if (alcancaveis.contains(mapeamento.estadoOrigem)) {
+                    alcancaveis.add(mapeamento.estadoDestino);
+                }
+            }
+        }
+
+        //cria um set de simbolos inalcancaveis
+        Set<Estado> inalcancaveis = new LinkedHashSet<>();
+        for (Estado estado : automato.estados) {
+            if (!alcancaveis.contains(estado)) {
+                inalcancaveis.add(estado);
+            }
+        }
+
+        //retira os mapeamentos dos simbolos inalcancaveis
+            for (Iterator<Mapeamento> it = automato.mapeamentos.iterator(); it.hasNext();) {
+                Mapeamento mapeamento = it.next();
+                if (inalcancaveis.contains(mapeamento.estadoOrigem)) {
+                    it.remove();
+                }
+            }
+
+        //retira os simbolos inalcancavels dos arrays de estados finais e estados
+            Iterator<Estado> it = automato.estados.iterator();
+            while(it.hasNext()){
+                Estado estado = it.next();
+                if(inalcancaveis.contains(estado)){
+                    it.remove();
+                }
+            }
+   }
+
+    /**
+     * Funcao responsavel por intersectar dois automatos
      *
      * @param segundoAutomato Automato a ser intersectado com o automato atual
      */
@@ -101,7 +182,7 @@ public class TransformacoesAutomato {
     }
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por unir dois autÃ´matos
+     * Funcao responsavel por unir dois automatos
      *
      * @param automato
      * @param segundoAutomato
