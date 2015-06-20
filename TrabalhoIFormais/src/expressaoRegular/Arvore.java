@@ -78,7 +78,7 @@ public class Arvore {
         Stack<Nodo> nodos = new Stack<>();
         Nodo auxiliar = raiz;
         int nAuxiliar = 1;
-        while (!folhas.isEmpty() || auxiliar != null) {
+        while (!nodos.isEmpty() || auxiliar != null) {
             if (auxiliar != null) {
                 nodos.push(auxiliar);
                 auxiliar = auxiliar.fEsquerda;

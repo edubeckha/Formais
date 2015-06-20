@@ -1,6 +1,7 @@
 package Transformacoes;
 
 import automatoFinito.AutomatoFinito;
+import automatoFinito.ClasseEquivalencia;
 import automatoFinito.Estado;
 import automatoFinito.Mapeamento;
 import automatoFinito.TipoEstado;
@@ -12,18 +13,21 @@ import java.util.Set;
 public class TransformacoesAutomato {
 
     /**
-     * FunÃ§Ã£o responsÃ¡vel por determinizar o automato T(M), gerando um novo
+     * Funcao responsavel por determinizar o automato T(M), gerando um novo
      * automato T(M') e mostrando-o ao usuario.
      */
     public static void determinizar(AutomatoFinito automato) {
+     AutomatoFinito tmp = new AutomatoFinito();
+     tmp.estados.add(automato.inicial);
      
-
+     if(automato.inicial.tipo.equals(TipoEstado.INICIALFINAL))
+         tmp.estadosFinais.add(automato.inicial);
     }
 
     /**
      * Funcao responsavel por complementar o automato em questao T(M)
      */
-    public void complementar(AutomatoFinito automato) {
+    public static void complementar(AutomatoFinito automato) {
         determinizar(automato);
         verificaETransformaCompleto(automato);
         ArrayList<Estado> novosEstadosFinais = new ArrayList<>();
@@ -62,7 +66,7 @@ public class TransformacoesAutomato {
      * completa-lo caso seja necessario
      *
      */
-    public void verificaETransformaCompleto(AutomatoFinito automato) {
+    public static void verificaETransformaCompleto(AutomatoFinito automato) {
         for (Mapeamento mapeamento : automato.mapeamentos) {
             if (mapeamento.estadoDestino.label.equals("-")) {
                 break;
@@ -80,6 +84,7 @@ public class TransformacoesAutomato {
         determinizar(automato);
         retiraInferteis(automato);
         retiraInalcancáveis(automato);
+        criaClassesEquivalencia(automato);
     }
 
     /**
@@ -166,14 +171,32 @@ public class TransformacoesAutomato {
                     it.remove();
                 }
             }
+            
+            
    }
+    
+    public static void criaClassesEquivalencia(AutomatoFinito automato){
+        Set<ClasseEquivalencia> classesEquivalencia = new LinkedHashSet<>();
+        
+        ClasseEquivalencia q0 = new ClasseEquivalencia("0");
+        ClasseEquivalencia q1 = new ClasseEquivalencia("1");
+        for(Estado est : automato.estados){
+            if(est.tipo.equals(TipoEstado.FINAL) || est.tipo.equals(TipoEstado.INICIALFINAL)){
+                q0.estadosEquivalentes.add(est);
+            }
+            q1.estadosEquivalentes.add(est);
+        }
+        
+        
+        
+    }
 
     /**
      * Funcao responsavel por intersectar dois automatos
      *
      * @param segundoAutomato Automato a ser intersectado com o automato atual
      */
-    public void interseccao(AutomatoFinito automato, AutomatoFinito segundoAutomato) {
+    public static void interseccao(AutomatoFinito automato, AutomatoFinito segundoAutomato) {
         //compleemento da uniao dos complementos !(!L1 UNI !L2)
         complementar(automato);
         complementar(segundoAutomato);
@@ -188,7 +211,7 @@ public class TransformacoesAutomato {
      * @param segundoAutomato
      * @return
      */
-    public AutomatoFinito uniao(AutomatoFinito automato, AutomatoFinito segundoAutomato) {
+    public static AutomatoFinito uniao(AutomatoFinito automato, AutomatoFinito segundoAutomato) {
         AutomatoFinito temp = new AutomatoFinito();
         Estado tmpInicial;
         tmpInicial = new Estado("U", TipoEstado.INICIAL);
@@ -203,7 +226,7 @@ public class TransformacoesAutomato {
         return temp;
     }
 
-    public void populaAutomato(AutomatoFinito temp, AutomatoFinito automato) {
+    public static void populaAutomato(AutomatoFinito temp, AutomatoFinito automato) {
         for (Mapeamento mapeamento : automato.mapeamentos) {
             if (mapeamento.estadoOrigem == automato.inicial) {
                 temp.mapeamentos.add(new Mapeamento(temp.inicial, mapeamento.terminalTransicao, mapeamento.estadoDestino));
