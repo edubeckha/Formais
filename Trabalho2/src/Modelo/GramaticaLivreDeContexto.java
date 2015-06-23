@@ -19,11 +19,17 @@ public class GramaticaLivreDeContexto {
         terminais = new LinkedHashSet<>();
     }
     
-    public void salvar(){
+    public void salvar(Object[][] dados, int numLinhas, int numColunas){
         
     }
+    
+    /**
+     * Função responsável por resetar a gramática
+     */
     public void resetar(){
-        
+        inicial = null;
+        naoTerminais.clear();
+        terminais.clear();
     }
     
     
